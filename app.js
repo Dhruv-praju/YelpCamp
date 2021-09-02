@@ -27,7 +27,7 @@ app.get('/campgrounds', (req, res)=>{
     res.render('campgrounds.ejs', {campgrounds:campgrounds})
 })
 
-// post route to submit campground
+// post route to submit campground comming from form
 app.post('/campgrounds', (req, res)=>{
     // get data form form and add to campgrounds array
     // redirect back to campgrounds page
@@ -46,4 +46,5 @@ app.get('/campgrounds/new', (req, res)=>{
 
 app.listen(5000, (req,res)=> {
     console.log('Server started !')
+    console.log('Listeninig at port 5000 ...');
 })
