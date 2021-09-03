@@ -2,46 +2,68 @@
 const express = require('express')
 const app = express()
 const {render} = require('ejs')
-const bodyParser = require('body-parser')
+const methodOverride = require('method-override')
 
-app.use(bodyParser.urlencoded({extended: true}))
+app.use(express.urlencoded({extended: true}))
 app.use(express.static('public'))
+app.use(methodOverride('_method'))
+
+/** Database setup */
+
+const mongoose = require('mongoose')
+// import Model(with which we can interact with DB)
+const Campground = require('./models/Campground')
+
+mongoose.connect("mongodb://localhost:27017/YelpcampApp", {useNewUrlParser: true, useUnifiedTopology: true})
+  .then(() => {
+    console.log("CONNECTION OPEN  !");
+  })
+  .catch((err) => {
+    console.log("ERROR !!", err);
+  });
 
 /** ROUTES */
+
 app.get('/', (req, res)=>{
     res.render('landing.ejs')
 })
-
-let campgrounds = [
-    {name:'Salmon Lake', image:'https://images.unsplash.com/photo-1508873696983-2dfd5898f08b?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'},
-    {name:'Granite Hill', image:'https://images.unsplash.com/photo-1445308394109-4ec2920981b1?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MzF8fGNhbXBpbmd8ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'},
-    {name:"Mountain Goat's Rest", image:'https://images.unsplash.com/photo-1471115853179-bb1d604434e0?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MjN8fGNhbXBpbmd8ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'},
-    {name:'Night Egde', image:'https://images.unsplash.com/photo-1487730116645-74489c95b41b?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'},
-    {name:'Amazon Woods', image:'https://images.unsplash.com/photo-1562206513-6a81cfc73936?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'},
-    {name:'Cold Himalayas', image:'https://images.unsplash.com/photo-1503265192943-9d7eea6fc77a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=967&q=80'},
-    {name:'Backwater Beach', image:'https://images.unsplash.com/photo-1594272042770-4e0bc2cdc2ab?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=967&q=80'}
-]
-
 // view all camp grounds
-app.get('/campgrounds', (req, res)=>{ 
-    res.render('campgrounds.ejs', {campgrounds:campgrounds})
+app.get('/campgrounds', async (req, res)=>{
+    const campgrounds = await Campground.find({}) 
+    res.render('campgrounds.ejs', { campgrounds })
 })
-
 // post route to submit campground comming from form
-app.post('/campgrounds', (req, res)=>{
+app.post('/campgrounds', async (req, res)=>{
     // get data form form and add to campgrounds array
     // redirect back to campgrounds page
-    let name = req.body.name 
-    let image = req.body.image      // data is stored in req.body vairable
-
-    campgrounds.push({name:name, image:image})
-
+    let new_campgrd = req.body
+    const added_campgrd = await Campground.create(new_campgrd)
     res.redirect('campgrounds')
 })
-
 app.get('/campgrounds/new', (req, res)=>{
     // make a form to get campground data
     res.render('new.ejs')
+})
+app.get('/campgrounds/:id', async (req, res)=>{
+    const {id} = req.params
+    const campground = await Campground.findById(id)
+    res.render('show.ejs', {campground})
+})
+app.get('/campgrounds/:id/edit', async(req, res)=>{
+    const {id} = req.params
+    const campground = await Campground.findById(id)
+    res.render('edit.ejs', {campground})
+})
+app.put('/campgrounds/:id', async (req, res)=>{
+    const {id} = req.params
+    // console.log(req.body);
+    const upd_campground = await Campground.findByIdAndUpdate(id, req.body, {runValidators:true, new:true})
+    res.redirect(`/campgrounds/${upd_campground._id}`)
+})
+app.delete('/campgrounds/:id', async(req, res)=>{
+    const {id} = req.params
+    const campground = await Campground.findByIdAndDelete(id)
+    res.redirect('/campgrounds')
 })
 
 app.listen(5000, (req,res)=> {

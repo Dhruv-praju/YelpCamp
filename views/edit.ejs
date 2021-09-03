@@ -1,0 +1,22 @@
+<%- include('partials/header') %> 
+
+<div class="container">
+    <a class="btn btn-outline-secondary" href="/campgrounds/<%= campground._id %> " role="button">Cancel</a>
+    <div class="row justify-content-center">
+        <div class="col-sm-10 col-md-8">
+            <h1 class="h2">Edit Campground</h1>
+            <form action="/campgrounds/<%= campground._id %>?_method=PUT" method="POST">
+                <input class="form-group form-control" type="text" placeholder="name" name="name" value="<%= campground.name %> " required>
+                <input class="form-group form-control" type="text" placeholder="image url" name="image" value="<%= campground.image %> " required>
+                <button class="btn btn-primary btn-lg btn-block" type="submit">Update</button>
+            </form>
+
+        </div>  
+    </div>
+    <form action="/campgrounds/<%= campground._id %>?_method=DELETE" method="POST">
+        <button type="submit" class="btn btn-outline-danger">Delete</button>
+    </form>
+</div>
+
+
+<%- include('partials/footer') %> 

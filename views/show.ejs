@@ -1,0 +1,17 @@
+<%- include('partials/header') %> 
+
+<a class="btn btn-outline-info ml-2 mb-3" href="/campgrounds">All Campgrounds</a>
+
+<div class="container">
+    <div class="row mb-4">
+        <h1><%= campground.name %> </h1>
+    </div>
+    <div class="row ">
+            <img src="<%= campground.image %>" class="h-25 w-75 img-fluid" alt="">
+    </div>
+
+</div>
+
+<a class="btn btn-outline-warning ml-2 mb-3" href="/campgrounds/<%= campground._id %>/edit">Edit</a>
+
+<%- include('partials/footer') %> 
