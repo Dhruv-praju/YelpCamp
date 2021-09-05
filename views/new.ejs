@@ -1,18 +1,50 @@
 <%- include('partials/header') %> 
 
 <div class="container">
-    <a class="btn btn-outline-secondary" href="/campgrounds" role="button">Back</a>
-    <div class="row justify-content-center">
-        <div class="col-sm-10 col-md-8">
-            <h1 class="h2">Create a new Campground</h1>
+    
+    <h1 class="text-center"> New Campground</h1>
+    <div class="row">
+        <div class="col-10 col-lg-6 offset-1 offset-lg-3">
             <form action="/campgrounds" method="POST">
-                <input class="form-group form-control" type="text" placeholder="name" name="name" required>
-                <input class="form-group form-control" type="text" placeholder="image url" name="image" required>
-                <button class="btn btn-primary btn-lg btn-block" type="submit">Submit</button>
-            </form>
+                <div class="form-group">
+                    <label for="title">Title</label>
+                    <input type="text" class="form-control" name="name" id="title" placeholder="" required>
+                </div>
+                <div class="form-group">
+                    <label for="img">Image</label>
+                    <input type="text" class="form-control" name="image" id="img" placeholder="" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-5">
+                        <label for="country">Country</label>
+                        <input type="text" class="form-control" name="country" id="country" required>
+                    </div>
+                    <div class="form-group col-4">
+                        <label for="state">State</label>
+                        <input type="text" class="form-control" name="state" id="state" required>
+                    </div>
+                    <div class="form-group col-3">
+                        <label for="inputCity">City</label>
+                        <input type="text" class="form-control" name="city" id="inputCity" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="img">Campground Price</label>
+                    <div class="input-group">
+                        <div class="input-group-text">$</div>
+                        <input type="text" class="form-control" name="price" id="img" required placeholder="">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                </div>
 
-        </div>  
+                <button class="btn btn-primary btn-block" type="submit">Create</button>
+            </form>
+        </div>
     </div>
+
 </div>
 
 

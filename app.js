@@ -25,7 +25,7 @@ mongoose.connect("mongodb://localhost:27017/YelpcampApp", {useNewUrlParser: true
 /** ROUTES */
 
 app.get('/', (req, res)=>{
-    res.render('landing.ejs')
+    res.render('index.ejs')
 })
 // view all camp grounds
 app.get('/campgrounds', async (req, res)=>{
@@ -36,8 +36,9 @@ app.get('/campgrounds', async (req, res)=>{
 app.post('/campgrounds', async (req, res)=>{
     // get data form form and add to campgrounds array
     // redirect back to campgrounds page
-    let new_campgrd = req.body
-    const added_campgrd = await Campground.create(new_campgrd)
+    // let new_campgrd = { ...req.body , country:'USA'}
+    const {name, image, price, description, ...location} = req.body
+    const added_campgrd = await Campground.create({name, image, price, description,location})
     res.redirect('campgrounds')
 })
 app.get('/campgrounds/new', (req, res)=>{

@@ -1,17 +1,32 @@
 <%- include('partials/header') %> 
 
-<a class="btn btn-outline-info ml-2 mb-3" href="/campgrounds">All Campgrounds</a>
 
 <div class="container">
     <div class="row mb-4">
-        <h1><%= campground.name %> </h1>
+        <div class="col-12">
+            <h1><%= campground.name %> </h1>
+        </div>
+        <div class="col-12">
+            <p class="h4 text-muted"><%= campground.location.city %>, <%= campground.location.state %>  </p>
+        </div>
     </div>
     <div class="row ">
-            <img src="<%= campground.image %>" class="h-25 w-75 img-fluid" alt="">
+        <div class="col-12">
+            <img src="<%= campground.image %>" class="w-75 img-fluid" alt="">
+        </div>
+        <div class="col-12 mt-4">
+            <p class="w-75"><%= campground.description %> </p>
+        </div>
     </div>
-
+    <div class="row mb-2">
+        <div class="col">
+            <h4>$<%= campground.price %>/night </h4>
+        </div>
+    </div>
+    <div class="row">
+        <a class="btn btn-warning ml-2 mb-3" href="/campgrounds/<%= campground._id %>/edit">Edit</a>
+    </div>
 </div>
 
-<a class="btn btn-outline-warning ml-2 mb-3" href="/campgrounds/<%= campground._id %>/edit">Edit</a>
 
 <%- include('partials/footer') %> 
