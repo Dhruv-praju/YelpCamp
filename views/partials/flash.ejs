@@ -1,0 +1,26 @@
+<% if(create_success && create_success.length){ %>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <%= create_success %> !
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+<% } %> 
+
+<% if(update_success && update_success.length){ %>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <%= update_success %> !
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+<% } %> 
+
+<% if(delete_success && delete_success.length){ %>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <%= delete_success %> !
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+<% } %> 
