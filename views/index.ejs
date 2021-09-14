@@ -1,9 +1,17 @@
-<%- include('partials/header') %> 
+<%- layout('layouts/boilerplate') %> 
 
-<h1>Landing Page!</h1>
+<!-- <h1>Landing Page!</h1>
 
 <p>Welcome to YelpCamp</p>
 
-<a href="/campgrounds">View all Campgrounds</a>
+<a href="/campgrounds">View all Campgrounds</a> -->
 
-<%- include('partials/footer') %> 
+<div class="text-center container">
+    <main role="main" class="inner cover">
+        <h1 class="cover-heading">Discover your Camps.</h1>
+        <p class="lead">See the most beautiful and scenic Campgrounds across the world. Download, edit the text, and add your own campground photos to make it your own.</p>
+        <p class="lead">
+          <a href="/campgrounds" class="btn btn-primary">View Campgrounds</a>
+        </p>
+    </main>
+</div>

@@ -2,6 +2,7 @@
 const express = require('express')
 const app = express()
 const {render} = require('ejs')
+const ejsMate = require('ejs-mate')
 const methodOverride = require('method-override')
 const session = require('express-session')
 const flash = require('connect-flash')
@@ -9,6 +10,9 @@ const passport = require('passport')
 const LocalStrategy = require('passport-local')
 const User = require('./models/user')
 const campgroundRoutes = require('./routes/campgrounds')
+const userRoutes = require('./routes/user')
+
+app.engine('ejs', ejsMate)
 
 app.use(express.urlencoded({extended: true}))
 app.use(express.static('public'))
@@ -50,7 +54,6 @@ app.use((req, res, next)=>{
     next()
 })
 
-
 app.get('/fakeUser', async (req, res)=>{
     const usr = new User({email:'dhruv@gmail.com', username:'dhru'})
     const passwd = 'chicken'
@@ -60,11 +63,16 @@ app.get('/fakeUser', async (req, res)=>{
 
 /** ROUTES */
 
+/**
+ *  /register - FORM
+ *  POST  /register - create a user
+ */
+app.use('/', userRoutes)
+app.use('/campgrounds', campgroundRoutes)
+
 app.get('/', (req, res)=>{
     res.render('index.ejs')
 })
-
-app.use('/campgrounds', campgroundRoutes)
 
 app.listen(5000, (req,res)=> {
     console.log('Server started !')
