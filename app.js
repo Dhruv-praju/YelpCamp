@@ -11,6 +11,7 @@ const LocalStrategy = require('passport-local')
 const User = require('./models/user')
 const campgroundRoutes = require('./routes/campgrounds')
 const userRoutes = require('./routes/user')
+const ExpressError = require('./utils/ExpressError')
 
 app.engine('ejs', ejsMate)
 
@@ -71,9 +72,29 @@ app.use('/', userRoutes)
 app.use('/campgrounds', campgroundRoutes)
 
 app.get('/', (req, res)=>{
-    res.render('index.ejs')
+    res.render('home.ejs')
+})
+app.all('*', (req, res, next)=>{  // if it didn't match any of above routes, send 404
+  // res.status(404).send('404   NOT FOUND!!')
+  next(new ExpressError(404, 'Page not found'))
 })
 
+/** Error Handler middleware */ 
+app.use((err, req, res, next)=>{
+  // console.log(err.name);
+  if(err.name === 'CastError') err = handleCastError(err)
+  next(err)
+})
+app.use((err, req, res, next)=>{
+  const {status=500, message='SOMETHING WENT WRONG ON SERVERSIDE !!'} = err
+  res.status(status).render('error.ejs', {message})
+})
+
+function handleCastError(error){
+  error.message = 'Something went wrong...'
+  error.status = 404
+  return error
+}
 app.listen(5000, (req,res)=> {
     console.log('Server started !')
     console.log('Listeninig at port 5000 ...');

@@ -4,18 +4,20 @@ const mongoose = require('mongoose')
 const campgroundSchema = new mongoose.Schema({
     name:{
         type: String,
-        required: true,
+        trim:  true,
+        required: [true, 'campground title must not be blank'],
         unique:true
     },
     image:{
         type: String,
-        required: true,
+        trim:  true,
+        required: [true, 'campground image URL must not be blank'],
         unique:true
     },
     price:{
         type: Number,
         default:0,
-        min:0
+        min:[0, 'campground price must be positive']
     },
     description:{
         type: String,

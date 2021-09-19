@@ -1,0 +1,24 @@
+<%- layout('layouts/boilerplate') %> 
+
+<%- include('../partials/flash') %> 
+
+    <header class="jumbotron">
+        <h1 class="display-4 font-weight-normal">Welcome to Campground !!</h1>
+        <p class="lead">View our hand-picked campgrounds from all over the world</p>
+        <a class="btn btn-primary btn-lg" href="/campgrounds/new">Add a new Campground</a>
+    </header>
+    
+    <div class="row text-center">
+        <% campgrounds.forEach((campground)=>{ %>
+            <div class="col-md-6 col-lg-4 mb-3">
+                <a href="/campgrounds/<%= campground._id %>">
+                    <div class="card">
+                        <img class="card-img-top" src=<%= campground.image %> alt="">
+                        <div class="card-body">
+                            <h4 class="card-title"><%= campground.name %> </h4>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        <% }) %> 
+    </div>

@@ -11,7 +11,7 @@ const userSchema = new Schema({
     }
 })
 
-userSchema.plugin(passportLocalMongoose)    // this will automatically add username, hash passwd
+userSchema.plugin(passportLocalMongoose)    // this will automatically add username, hash passwd and salt
 
 const User = new mongoose.model('User', userSchema)
 
