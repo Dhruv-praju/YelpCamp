@@ -48,10 +48,12 @@ passport.deserializeUser(User.deserializeUser())    // this is for deserializing
 //  deserialize means to remove user data of the session
 
 app.use((req, res, next)=>{
-    res.locals.create_success = req.flash('create_success')   //make success key variable to access message
-    res.locals.update_success = req.flash('update_success')
-    res.locals.delete_success = req.flash('delete_success')
+    // make success key variable to access message
+    res.locals.success = req.flash('success')
     res.locals.error = req.flash('error')
+    // every templete need
+    res.locals.currentUser = req.user // req.user has info about current user which is logeed in else if not logged it is undefined
+    // console.log(req.user);
     next()
 })
 
@@ -64,10 +66,6 @@ app.get('/fakeUser', async (req, res)=>{
 
 /** ROUTES */
 
-/**
- *  /register - FORM
- *  POST  /register - create a user
- */
 app.use('/', userRoutes)
 app.use('/campgrounds', campgroundRoutes)
 

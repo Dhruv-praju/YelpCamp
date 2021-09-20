@@ -13,15 +13,23 @@
                 </li>
             </ul>
 
+            <% if(!currentUser) { %>
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/register">Sign Up</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login">LogIn</a> 
+                    </li>
+                </ul>
 
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="/register">Sign Up</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">LogIn</a> 
-                </li>
-            </ul>
+            <% } else { %>
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout">Log out</a>
+                    </li>
+                </ul>
+            <% } %> 
         </div>
     </div>
 </nav>
