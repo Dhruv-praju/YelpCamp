@@ -32,9 +32,13 @@ router.get('/login', (req, res)=>{
     res.render('users/login.ejs')
 })
 router.post('/login',
- passport.authenticate('local', {failureFlash: true, failureRedirect:'/login', successRedirect: '/', successFlash: 'Successfully logged in'}),
+ passport.authenticate('local', {failureFlash: true, failureRedirect:'/login'}),
  (req, res)=>{
-    
+    req.flash('success', 'Successfully logged In ')
+    // before redirecting return to page user was previously requesting for before getting logged in
+    const redirectUrl = req.session.returnTo || '/'
+    delete req.session.returnTo     // remove session data
+    res.redirect(redirectUrl)
 })
 // ref :http://www.passportjs.org/docs/downloads/html/
 
