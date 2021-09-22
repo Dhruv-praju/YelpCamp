@@ -50,7 +50,7 @@ passport.deserializeUser(User.deserializeUser())    // this is for deserializing
 /** Middleware */
 
 app.use((req, res, next)=>{
-    console.log(req.session);
+    // console.log(req.session);
     // make success key variable to access message to all templates
     res.locals.success = req.flash('success')
     res.locals.error = req.flash('error')
@@ -59,13 +59,6 @@ app.use((req, res, next)=>{
     // console.log(req.user);
     next()
 })
-
-// app.get('/fakeUser', async (req, res)=>{
-//     const usr = new User({email:'dhruv@gmail.com', username:'dhru'})
-//     const passwd = 'chicken'
-//     const newUser = await User.register(usr, passwd)  // this will hash and store user obj in DB
-//     res.send(newUser)
-// })
 
 /** ROUTES */
 
