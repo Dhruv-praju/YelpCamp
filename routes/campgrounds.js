@@ -4,6 +4,9 @@ const Campground = require('../models/campground')
 const catchAsync = require('../utils/catchAsync')
 const ExpressError = require('../utils/ExpressError')
 const isLoggedIn = require('../middleware')
+const multer = require('multer')    // package for parsing form data with files
+const {storage} = require('../cloudinary/index')
+const upload = multer({ storage })
 
 // view all camp grounds
 router.get('/', catchAsync(async (req, res)=>{
@@ -11,14 +14,18 @@ router.get('/', catchAsync(async (req, res)=>{
     res.render('campgrounds/index.ejs', { campgrounds })
 }))
 // post route to submit campground comming from form
-router.post('/', isLoggedIn, catchAsync(async (req, res)=>{
-    // get data form form and add to campgrounds collection in DB
-    // redirect back to campgrounds page
-    if(!req.body.campground) throw new ExpressError(400, 'Invalid Campground data')
-    const added_campgrd = await Campground.create(req.body.campground)
-    req.flash('success','Sucessfully created new Campground')
-    res.redirect('campgrounds')
-}))
+// router.post('/', isLoggedIn, catchAsync(async (req, res)=>{
+//     // get data form form and add to campgrounds collection in DB
+//     // redirect back to campgrounds page
+//     if(!req.body.campground) throw new ExpressError(400, 'Invalid Campground data')
+//     const added_campgrd = await Campground.create(req.body.campground)
+//     req.flash('success','Sucessfully created new Campground')
+//     res.redirect('campgrounds')
+// }))
+router.post('/', upload.array('image'), (req, res)=>{
+    console.log(req.body, req.files)
+    res.send('IT WORKED !')
+})
 router.get('/new', isLoggedIn, (req, res)=>{
     // make a form to get campground data
     res.render('campgrounds/new.ejs')

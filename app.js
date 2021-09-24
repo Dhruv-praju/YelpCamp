@@ -1,3 +1,10 @@
+if(process.env.NODE_ENV !== 'production'){
+  require('dotenv').config()
+}
+// u can access key values declared in .env file
+console.log(process.env.CLOUDINARY_CLOUD_NAME);
+console.log(process.env.CLOUDINARY_KEY);
+
 /**** IMPORT PACKAGES */
 const express = require('express')
 const app = express()
