@@ -14,18 +14,25 @@ router.get('/', catchAsync(async (req, res)=>{
     res.render('campgrounds/index.ejs', { campgrounds })
 }))
 // post route to submit campground comming from form
-// router.post('/', isLoggedIn, catchAsync(async (req, res)=>{
-//     // get data form form and add to campgrounds collection in DB
-//     // redirect back to campgrounds page
-//     if(!req.body.campground) throw new ExpressError(400, 'Invalid Campground data')
-//     const added_campgrd = await Campground.create(req.body.campground)
-//     req.flash('success','Sucessfully created new Campground')
-//     res.redirect('campgrounds')
-// }))
-router.post('/', upload.array('image'), (req, res)=>{
-    console.log(req.body, req.files)
-    res.send('IT WORKED !')
-})
+router.post('/', isLoggedIn, upload.array('image'), catchAsync(async (req, res)=>{
+    // get data form form and add to campgrounds collection in DB
+    // redirect back to campgrounds page
+    if(!req.body.campground) throw new ExpressError(400, 'Invalid Campground data')
+    if(!req.body.campground.description) delete req.body.campground.description
+    const campground = new Campground(req.body.campground)
+    campground.images = req.files.map(f => ({url:f.path, filename:f.filename}))
+    console.log(campground);
+    await campground.save()
+    console.log("DONE SAVING");
+    req.flash('success','Sucessfully created new Campground')
+    res.redirect('campgrounds')
+}))
+/** all the uploaded files can be accessed using 'req.files' object
+ *  to accept form data with files add 'upload' middleware of multer */ 
+// router.post('/', isLoggedIn, upload.array('image'), (req, res)=>{
+//     // console.log(req.body, req.files)
+//     res.send('IT WORKED !')
+// })
 router.get('/new', isLoggedIn, (req, res)=>{
     // make a form to get campground data
     res.render('campgrounds/new.ejs')

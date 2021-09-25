@@ -8,12 +8,12 @@ const campgroundSchema = new mongoose.Schema({
         required: [true, 'campground title must not be blank'],
         unique:true
     },
-    image:{
-        type: String,
-        trim:  true,
-        required: [true, 'campground image URL must not be blank'],
-        unique:true
-    },
+    images:[
+        {
+            url:String,
+            filename:String
+        }
+    ],
     price:{
         type: Number,
         default:0,

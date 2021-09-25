@@ -2,8 +2,8 @@ if(process.env.NODE_ENV !== 'production'){
   require('dotenv').config()
 }
 // u can access key values declared in .env file
-console.log(process.env.CLOUDINARY_CLOUD_NAME);
-console.log(process.env.CLOUDINARY_KEY);
+// console.log(process.env.CLOUDINARY_CLOUD_NAME);
+// console.log(process.env.CLOUDINARY_KEY);
 
 /**** IMPORT PACKAGES */
 const express = require('express')
@@ -87,6 +87,7 @@ app.use((err, req, res, next)=>{
   next(err)
 })
 app.use((err, req, res, next)=>{
+  // console.dir(err.name);
   const {status=500, message='SOMETHING WENT WRONG ON SERVERSIDE !!'} = err
   res.status(status).render('error.ejs', {message})
 })

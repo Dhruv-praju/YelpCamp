@@ -1,7 +1,7 @@
 /** Intialize Database with some fake data */
 const mongoose = require('mongoose')
 
-const Campground = require('./models/Campground')
+const Campground = require('./models/campground')
 
 mongoose.connect("mongodb://localhost:27017/YelpcampApp", {useNewUrlParser: true, useUnifiedTopology: true})
   .then(() => {
@@ -12,13 +12,65 @@ mongoose.connect("mongodb://localhost:27017/YelpcampApp", {useNewUrlParser: true
   });
 
 const seedCamps = [
-    {name:'Salmon Lake', location:{ city:'Pulnas'} ,image:'https://images.unsplash.com/photo-1508873696983-2dfd5898f08b?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'},
-    {name:'Granite Hill', location:{ city:'Lonavala'} ,image:'https://images.unsplash.com/photo-1445308394109-4ec2920981b1?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MzF8fGNhbXBpbmd8ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'},
-    {name:"Mountain Goat's Rest", location:{ city:'Pune'} ,image:'https://images.unsplash.com/photo-1471115853179-bb1d604434e0?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MjN8fGNhbXBpbmd8ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'},
-    {name:'Night Egde', location:{ city:'Khopoli'} ,image:'https://images.unsplash.com/photo-1487730116645-74489c95b41b?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'},
-    {name:'Amazon Woods', location:{ state:'Argentena', city:'upiha'} ,image:'https://images.unsplash.com/photo-1562206513-6a81cfc73936?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'},
-    {name:'Cold Himalayas', location:{ state:'Uttarakhand', city:'Dehradun'} ,image:'https://images.unsplash.com/photo-1503265192943-9d7eea6fc77a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=967&q=80'},
-    {name:'Backwater Beach', location:{ city:'Kalwa'} ,image:'https://images.unsplash.com/photo-1594272042770-4e0bc2cdc2ab?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=967&q=80'}
+    {
+      name:'Salmon Lake',
+       location:{ city:'Pulnas'} ,
+       images:[{
+         url:'https://res.cloudinary.com/dkqoek2p3/image/upload/v1632569397/YelpCamp/photo-1508873696983-2dfd5898f08b_nqvpey.jpg',
+         filename:'YelpCamp/photo-1508873696983-2dfd5898f08b_nqvpey'
+       }]},
+    {
+      name:'Granite Hill',
+       location:{ city:'Lonavala'} ,
+       images:[{
+         url:'https://res.cloudinary.com/dkqoek2p3/image/upload/v1632568979/YelpCamp/Lonavalamh_kl6gyp.jpg',
+         filename:'YelpCamp/Lonavalamh_kl6gyp'
+        },
+        {
+          url:'https://res.cloudinary.com/dkqoek2p3/image/upload/v1632568981/YelpCamp/Rajmachi_20-Jan_dkgexm.jpg',
+          filename:'YelpCamp/Rajmachi_20-Jan_dkgexm'
+        },
+        {
+          url:'https://res.cloudinary.com/dkqoek2p3/image/upload/v1632568984/YelpCamp/Places-to-Visit-in-Lonavala_600-1280x720_mdob6e.jpg',
+          filename:'YelpCamp/Places-to-Visit-in-Lonavala_600-1280x720_mdob6e'
+        }]
+      },
+    {
+      name:'Night Egde',
+       location:{ city:'Khopoli'} ,
+       images:[{
+         url:'https://res.cloudinary.com/dkqoek2p3/image/upload/v1632569255/YelpCamp/COVID_20CAMPING_20TN_lca6qh.jpg',
+         filename:'YelpCamp/COVID_20CAMPING_20TN_lca6qh'
+       },
+       {
+        url:'https://res.cloudinary.com/dkqoek2p3/image/upload/v1632569224/YelpCamp/FamilyCamping-2021-GettyImages-948512452-2_wbi9zk.jpg',
+        filename:'YelpCamp/FamilyCamping-2021-GettyImages-948512452-2_wbi9zk'
+      }]
+    },
+    {
+      name:'Amazon Woods',
+       location:{ state:'Argentena', city:'upiha'} ,
+       images:[{
+         url:'https://res.cloudinary.com/dkqoek2p3/image/upload/v1632569246/YelpCamp/solo-camping-tips_edib8a.jpg',
+         filename:'YelpCamp/solo-camping-tips_edib8a'
+       },
+       {
+        url:'https://res.cloudinary.com/dkqoek2p3/image/upload/v1632569304/YelpCamp/Best-Affordable-Camping-Gear-000-Hero_bf6qpw.jpg',
+        filename:'YelpCamp/Best-Affordable-Camping-Gear-000-Hero_bf6qpw'
+      },
+      {
+        url:'https://res.cloudinary.com/dkqoek2p3/image/upload/v1632569220/YelpCamp/1200px-Tent_camping_along_the_Sulayr_trail_in_La_Taha_2C_Sierra_Nevada_National_Park__28DSCF5147_29_gbcw54.jpg',
+        filename:'YelpCamp/1200px-Tent_camping_along_the_Sulayr_trail_in_La_Taha_2C_Sierra_Nevada_National_Park__28DSCF5147_29_gbcw54'
+      }]
+    },
+    {
+      name:'Cold Himalayas',
+       location:{ state:'Uttarakhand', city:'Dehradun'} ,
+       images:[{
+         url:'https://res.cloudinary.com/dkqoek2p3/image/upload/v1632570350/YelpCamp/photo-1503265192943-9d7eea6fc77a_n2hsv5.jpg',
+         filename:'YelpCamp/photo-1503265192943-9d7eea6fc77a_n2hsv5'
+       }]
+    }
 ]
 
 // save the campgrounds in DB
