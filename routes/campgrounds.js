@@ -5,7 +5,7 @@ const catchAsync = require('../utils/catchAsync')
 const ExpressError = require('../utils/ExpressError')
 const isLoggedIn = require('../middleware')
 const multer = require('multer')    // package for parsing form data with files
-const {storage} = require('../cloudinary/index')
+const {storage, cloudinary} = require('../cloudinary/index')
 const upload = multer({ storage })
 
 // view all camp grounds
@@ -15,8 +15,6 @@ router.get('/', catchAsync(async (req, res)=>{
 }))
 // post route to submit campground comming from form
 router.post('/', isLoggedIn, upload.array('image'), catchAsync(async (req, res)=>{
-    // get data form form and add to campgrounds collection in DB
-    // redirect back to campgrounds page
     if(!req.body.campground) throw new ExpressError(400, 'Invalid Campground data')
     if(!req.body.campground.description) delete req.body.campground.description
     const campground = new Campground(req.body.campground)
@@ -49,9 +47,24 @@ router.get('/:id/edit', isLoggedIn, catchAsync(async(req, res)=>{
     if(!campground) throw new ExpressError(400, 'Campground does not exist')
     res.render('campgrounds/edit.ejs', {campground})
 }))
-router.put('/:id', isLoggedIn, catchAsync(async (req, res, next)=>{
+router.put('/:id', isLoggedIn, upload.array('image'), catchAsync(async (req, res, next)=>{
         const {id} = req.params
-        const upd_campground = await Campground.findByIdAndUpdate(id, {...req.body.campground}, {runValidators:true, new:true})
+        const campground = {...req.body.campground}
+        const upd_campground = await Campground.findByIdAndUpdate(id, campground, {runValidators:true, new:true})
+        const imgs = req.files.map(f => ({url:f.path, filename:f.filename}))    // add images
+        upd_campground.images.push(...imgs)
+        // delete selected images
+        const {deleteImages} = req.body
+        if(deleteImages && deleteImages.length){
+            // delete image objs from mongoDB
+            const new_imgs = upd_campground.images.filter( img => !deleteImages.includes(img.filename) )
+            upd_campground.images = new_imgs
+            // delete images from cloudinary
+            for(let filename of deleteImages){
+                await cloudinary.uploader.destroy(filename)
+            }
+        }
+        await upd_campground.save()
         req.flash('success', 'Sucessfully updated the Campground')
         res.redirect(`/campgrounds/${upd_campground._id}`)
         
@@ -59,6 +72,8 @@ router.put('/:id', isLoggedIn, catchAsync(async (req, res, next)=>{
 router.delete('/:id', isLoggedIn, catchAsync(async(req, res)=>{
     const {id} = req.params
     const campground = await Campground.findByIdAndDelete(id)
+    // delete its images from cloudinary
+    campground.images.forEach( ({ filename }) => cloudinary.uploader.destroy(filename) )
     req.flash('success', 'Sucessfully deleted the Campground')
     res.redirect('/campgrounds')
 }))
