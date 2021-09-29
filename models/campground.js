@@ -1,7 +1,8 @@
 const mongoose = require('mongoose')
+const {Schema, model} = mongoose
 
 // make campground schema
-const campgroundSchema = new mongoose.Schema({
+const campgroundSchema = new Schema({
     name:{
         type: String,
         trim:  true,
@@ -14,6 +15,7 @@ const campgroundSchema = new mongoose.Schema({
             filename:String
         }
     ],
+    author:{type:Schema.Types.ObjectId, ref:'User'},
     price:{
         type: Number,
         default:0,
@@ -41,7 +43,7 @@ const campgroundSchema = new mongoose.Schema({
 })
 
 // make a model out of schema
-const Campground = new mongoose.model('Campground',campgroundSchema)
+const Campground = new model('Campground',campgroundSchema)
 
 // export that model
 module.exports = Campground

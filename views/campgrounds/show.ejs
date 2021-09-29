@@ -44,7 +44,9 @@
             <h4>$<%= campground.price %>/night </h4>
         </div>
     </div>
-    <div class="row">
-        <a class="btn btn-warning ml-2 mb-3" href="/campgrounds/<%= campground._id %>/edit">Edit</a>
-    </div>
+    <% if(currentUser && campground.author.equals(currentUser._id)){ %>
+        <div class="row">
+            <a class="btn btn-warning ml-2 mb-3" href="/campgrounds/<%= campground._id %>/edit">Edit</a>
+        </div>
+    <% } %> 
 </div>

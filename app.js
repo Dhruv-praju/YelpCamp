@@ -19,6 +19,7 @@ const User = require('./models/user')
 const campgroundRoutes = require('./routes/campgrounds')
 const userRoutes = require('./routes/user')
 const ExpressError = require('./utils/ExpressError')
+const morgan = require('morgan')
 
 app.engine('ejs', ejsMate)
 
@@ -54,8 +55,13 @@ passport.serializeUser(User.serializeUser())    // this is telling passport how 
 passport.deserializeUser(User.deserializeUser())    // this is for deserializing user data
 //  deserialize means to remove user data of the session
 
-/** Middleware */
+/** Middlewares */
 
+app.use(morgan('dev'))
+// app.use((req, res, next)=>{
+//   // console.log(req.user);
+//   next()
+// })
 app.use((req, res, next)=>{
     // console.log(req.session);
     // make success key variable to access message to all templates
