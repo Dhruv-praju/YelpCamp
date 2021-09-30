@@ -39,7 +39,10 @@ const campgroundSchema = new Schema({
             type: String,
             default:'Mumbai'
         } 
-    }
+    },
+    reviews:[
+        {type:Schema.Types.ObjectId, ref:'Review'}
+    ]
 })
 
 // make a model out of schema
