@@ -7,7 +7,11 @@ const reviewSchema = Schema({
         min: 1,
         max: 5
     },
-    text: String
+    text: {
+        type: String,
+        trim: true,
+        required:[true, 'Review text must not be empty']
+    }
 })
 
 const Review = model('Review', reviewSchema)

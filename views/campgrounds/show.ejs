@@ -1,71 +1,90 @@
 <%- layout('layouts/boilerplate') %> 
 
 <div class="mb-5">
-    <div class="row mb-4">
-        <div class="col-12">
-            <h1><%= campground.name %> </h1>
-        </div>
-        <div class="col-12">
-            <p class="h4 text-muted"><%= campground.location.city %>, <%= campground.location.state %>  </p>
-        </div>
-    </div>
-    <div class="row ">
-        <div class="col-md-8">
-            
-            <div id="campgroundCarousel" class="carousel slide" data-ride="carousel">
-                <div class="carousel-inner">
-                    <% campground.images.forEach((img, i)=>{ %>
-                        <div class="carousel-item <%= i==0 ? "active" : "" %>">
-                            <img src="<%= img.url %>" class="d-block w-100 img-fluid" alt="">
-                        </div>
-                    <% })  %> 
+
+    <div class="row">
+        <div class="col-md-7">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h2><%= campground.name %> </h2>
                 </div>
-                <% if(campground.images.length > 1){ %>
-                    
-                    <a class="carousel-control-prev" href="#campgroundCarousel" role="button" data-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="sr-only">Previous</span>
-                      </a>
-                      <a class="carousel-control-next" href="#campgroundCarousel" role="button" data-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="sr-only">Next</span>
-                      </a>
-                <% } %> 
-
+                <div class="col-12">
+                    <p class="h5 text-muted"><%= campground.location.city %>, <%= campground.location.state %>  </p>
+                </div>
             </div>
+            <div class="row ">
+                <div class="col-md-11">
+                    
+                    <div id="campgroundCarousel" class="carousel slide" data-ride="carousel">
+                        <div class="carousel-inner">
+                            <% campground.images.forEach((img, i)=>{ %>
+                                <div class="carousel-item <%= i==0 ? "active" : "" %>">
+                                    <img src="<%= img.url %>" class="d-block w-100 img-fluid" alt="">
+                                </div>
+                            <% })  %> 
+                        </div>
+                        <% if(campground.images.length > 1){ %>
+                            
+                            <a class="carousel-control-prev" href="#campgroundCarousel" role="button" data-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="sr-only">Previous</span>
+                              </a>
+                              <a class="carousel-control-next" href="#campgroundCarousel" role="button" data-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="sr-only">Next</span>
+                              </a>
+                        <% } %> 
+        
+                    </div>
+        
+                </div>
+                <div class="col-md-11 mt-4">
+                    <h4>$<%= campground.price %>/night </h4>
+                </div>
+                <div class="col-md-11 mt-3">
+                    <p><%= campground.description %> </p>
+                </div>
+            </div>
+            <div class="row mb-2">
+            </div>
+            <% if(currentUser && campground.author.equals(currentUser._id)){ %>
+                <div class="row">
+                    <a class="btn btn-warning ml-2 mb-3" href="/campgrounds/<%= campground._id %>/edit">Edit</a>
+                </div>
+            <% } %>
+        </div>
 
-        </div>
-        <div class="col-md-8 mt-4">
-            <p><%= campground.description %> </p>
-        </div>
-    </div>
-    <div class="row mb-2">
-        <div class="col">
-            <h4>$<%= campground.price %>/night </h4>
-        </div>
-    </div>
-    <% if(currentUser && campground.author.equals(currentUser._id)){ %>
-        <div class="row">
-            <a class="btn btn-warning ml-2 mb-3" href="/campgrounds/<%= campground._id %>/edit">Edit</a>
-        </div>
-    <% } %> 
-    <div class="row mt-5">
-        <div class="col-lg-8">
-            <h3 class="mb-3">Leave a Review</h3>
-            <form action="">
-                    <div class="form-group col-md-4">
-                        <label for="rating">Rating</label>
-                        <input type="range" class="form-control-range" min="1" max="5" id="rating">
-                    </div>
-                    <div class="form-group col-md-9">
-                        <label for="review">Review</label>
-                        <textarea class="form-control" id="review" rows="2"></textarea>
-                    </div>
-                    <div class="form-group col-2">
-                        <button type="submit" class="btn btn-outline-secondary">review</button>
-                    </div>
-            </form>
-              
+        <div class="col-md-5">
+            <!-- MAKING REVIEW -->
+            <h5 class="my-3">Leave a Review</h5>
+            <div class="col px-0 text-left">
+                    <form action="/campgrounds/<%= campground._id %>/reviews" class="needs-validation" novalidate method="POST">
+                            <div class="form-group col-md-8">
+                                <label for="rating">Rating</label>
+                                <input type="range"name="review[rating]" class="form-control-range" min="1" max="5" id="rating">
+                            </div>
+                            <div class="form-group col-md-12">
+                                <label for="review">Review</label>
+                                <textarea class="form-control" name="review[text]" required id="review" rows="2"></textarea>
+                            </div>
+                            <div class="form-group col-2">
+                                <button type="submit" class="btn btn-outline-secondary">review</button>
+                            </div>
+                    </form>
+                      
+                </div>
+            <!-- SHOWING REVIEW -->
+            <% if(campground.reviews.length) { %>
+                <h5>Reviews</h5>
+                    <% for(review of campground.reviews){ %>
+                        <div class="col mb-2 card">
+                                <div class="card-body">
+                                    <b class="card-title mb-1">Rating <%= review.rating %> </b>
+                                    <p class="card-text"><%= review.text %></p>
+                                </div>
+                        </div>
+                    <% } %> 
+            <% }  %> 
         </div>
     </div>
 </div>

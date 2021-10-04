@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const Campground = require('../models/campground')
+const Review = require('../models/review')
 const catchAsync = require('../utils/catchAsync')
 const ExpressError = require('../utils/ExpressError')
 const {isLoggedIn, isAuthor} = require('../middleware')
@@ -42,8 +43,9 @@ router.get('/new', isLoggedIn, (req, res)=>{
 })
 router.get('/:id', catchAsync(async (req, res)=>{
     const {id} = req.params
-    const campground = await Campground.findById(id)
+    const campground = await Campground.findById(id).populate('reviews')
     if(!campground) throw new ExpressError(400, 'Campground does not exist')
+    console.log(campground.reviews)
     res.render('campgrounds/show.ejs', {campground})
 }))
 router.get('/:id/edit', isLoggedIn, isAuthor, catchAsync(async(req, res)=>{
@@ -83,5 +85,19 @@ router.delete('/:id', isLoggedIn, isAuthor, catchAsync(async(req, res)=>{
     res.redirect('/campgrounds')
 }))
 
+router.post('/:id/reviews', isLoggedIn, catchAsync(async(req, res)=>{
+    const {id} = req.params
+    // find the campground
+    const campground = await Campground.findById(id)
+    // make the review
+    const review = new Review(req.body.review)
+    // add review to that campground
+    campground.reviews.push(review)
+    // save review and campground after changing
+    await review.save()
+    await campground.save()
+
+    res.redirect(`/campgrounds/${campground._id}`)
+}))
 
 module.exports = router;
