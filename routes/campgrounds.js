@@ -1,13 +1,13 @@
 const express = require('express')
 const router = express.Router()
 const Campground = require('../models/campground')
-const Review = require('../models/review')
 const catchAsync = require('../utils/catchAsync')
 const ExpressError = require('../utils/ExpressError')
 const {isLoggedIn, isOwner} = require('../middleware')
 const multer = require('multer')    // package for parsing form data with files
 const {storage, cloudinary} = require('../cloudinary/index')
 const upload = multer({ storage })
+const Review = require('../models/review')
 
 // view all camp grounds
 router.get('/', catchAsync(async (req, res)=>{
@@ -84,19 +84,26 @@ router.delete('/:id', isLoggedIn, isOwner, catchAsync(async(req, res)=>{
     res.redirect('/campgrounds')
 }))
 
-router.post('/:id/reviews', isLoggedIn, catchAsync(async(req, res)=>{
-    const {id} = req.params
-    // find the campground
-    const campground = await Campground.findById(id)
-    // make the review
-    const review = new Review(req.body.review)
-    // add review to that campground
-    campground.reviews.push(review)
-    // save review and campground after changing
-    await review.save()
-    await campground.save()
+// router.post('/:id/reviews', isLoggedIn, catchAsync(async(req, res)=>{
+//     const {id} = req.params
+//     // find the campground
+//     const campground = await Campground.findById(id)
+//     // make the review
+//     const review = new Review(req.body.review)
+//     // add review to that campground
+//     campground.reviews.push(review)
+//     // save review and campground after changing
+//     await review.save()
+//     await campground.save()
 
-    res.redirect(`/campgrounds/${campground._id}`)
-}))
-
+//     res.redirect(`/campgrounds/${campground._id}`)
+// }))
+// router.delete('/:id/reviews/:reviewId', isLoggedIn, catchAsync(async(req, res)=>{
+//     // find and delete review obj
+//     const {reviewId, id} = req.params
+//     const review = await Review.findByIdAndDelete(reviewId)
+//     // delete this review reference out of array in campgrd object
+//     await Campground.findByIdAndUpdate(id, {$pull: {reviews: reviewId}})
+//     res.redirect(`/campgrounds/${id}`)
+// }))
 module.exports = router;
