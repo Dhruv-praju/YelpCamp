@@ -12,14 +12,14 @@ const isLoggedIn = (req, res, next)=>{
     next()
 }
 
-const isAuthor = async (req, res, next)=>{
-    // campgroud author == user who is requesting(for editing campgrnd)
+const isOwner = async (req, res, next)=>{
+    // campgroud owner == user who is requesting(for editing campgrnd)
     const {id} = req.params
     // get campgrd
     const campground = await Campground.findById(id)
-    if(!campground.author.equals(req.user._id)){    // throw error if not author
+    if(!campground.owner.equals(req.user._id)){    // throw error if not owner
         next(new ExpressError(400, "You don't have permission to do that !"))
     }
     next()
 }
-module.exports = { isLoggedIn, isAuthor }
+module.exports = { isLoggedIn, isOwner }

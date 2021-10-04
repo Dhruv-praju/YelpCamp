@@ -47,7 +47,7 @@
             </div>
             <div class="row mb-2">
             </div>
-            <% if(currentUser && campground.author.equals(currentUser._id)){ %>
+            <% if(currentUser && campground.owner.equals(currentUser._id)){ %>
                 <div class="row">
                     <a class="btn btn-warning ml-2 mb-3" href="/campgrounds/<%= campground._id %>/edit">Edit</a>
                 </div>

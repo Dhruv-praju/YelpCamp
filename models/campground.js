@@ -15,7 +15,7 @@ const campgroundSchema = new Schema({
             filename:String
         }
     ],
-    author:{type:Schema.Types.ObjectId, ref:'User'},
+    owner:{type:Schema.Types.ObjectId, ref:'User'},
     price:{
         type: Number,
         default:0,
