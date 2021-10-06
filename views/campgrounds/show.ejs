@@ -1,5 +1,5 @@
 <%- layout('layouts/boilerplate') %> 
-
+<link rel="stylesheet" href="/stylesheets/stars.css">
 <div class="mb-5">
 
     <div class="row">
@@ -56,12 +56,24 @@
 
         <div class="col-md-5">
             <!-- MAKING REVIEW -->
-            <h5 class="my-3">Leave a Review</h5>
+            <legend class="my-3">Leave a Review</legend>
             <div class="col px-0 text-left">
                     <form action="/campgrounds/<%= campground._id %>/reviews" class="needs-validation" novalidate method="POST">
                             <div class="form-group col-md-8">
                                 <label for="rating">Rating</label>
-                                <input type="range"name="review[rating]" class="form-control-range" min="1" max="5" id="rating">
+                                <fieldset class="starability-basic">
+                                    <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="1" checked aria-label="No rating." />
+                                    <input type="radio" id="first-rate1" name="review[rating]" value="1" />
+                                    <label for="first-rate1" title="Terrible">1 star</label>
+                                    <input type="radio" id="first-rate2" name="review[rating]" value="2" />
+                                    <label for="first-rate2" title="Not good">2 stars</label>
+                                    <input type="radio" id="first-rate3" name="review[rating]" value="3" />
+                                    <label for="first-rate3" title="Average">3 stars</label>
+                                    <input type="radio" id="first-rate4" name="review[rating]" value="4" />
+                                    <label for="first-rate4" title="Very good">4 stars</label>
+                                    <input type="radio" id="first-rate5" name="review[rating]" value="5" />
+                                    <label for="first-rate5" title="Amazing">5 stars</label>
+                                  </fieldset>
                             </div>
                             <div class="form-group col-md-12">
                                 <label for="review">Review</label>
@@ -75,12 +87,18 @@
                 </div>
             <!-- SHOWING REVIEW -->
             <% if(campground.reviews.length) { %>
-                <h5>Reviews</h5>
+                <legend>Reviews</legend>
                     <% for(review of campground.reviews){ %>
                         <div class="col mb-2 card">
                                 <div class="card-body">
-                                    <b class="card-title mb-1">Rating <%= review.rating %> </b>
+                                    
+                                    <p class="starability-result" data-rating="<%= review.rating %>">
+                                      Rated: <%= review.rating %> stars
+                                    </p>
+                                  
                                     <p class="card-text"><%= review.text %></p>
+                                    <footer class="blockquote-footer text-right"><cite title="Source Title"><%= review.author.username %> </cite></footer>
+
                                     <% if(currentUser && review.author.equals(currentUser._id)){ %>
                                     
                                     <form action="/campgrounds/<%= campground._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST">

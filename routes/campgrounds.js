@@ -42,7 +42,7 @@ router.get('/new', isLoggedIn, (req, res)=>{
 })
 router.get('/:id', catchAsync(async (req, res)=>{
     const {id} = req.params
-    const campground = await Campground.findById(id).populate('reviews')
+    const campground = await Campground.findById(id).populate({path:'reviews', populate:'author'})
     if(!campground) throw new ExpressError(400, 'Campground does not exist')
     res.render('campgrounds/show.ejs', {campground})
 }))
