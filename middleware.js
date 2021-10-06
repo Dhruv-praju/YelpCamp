@@ -1,4 +1,5 @@
 const Campground = require("./models/campground")
+const Review = require('./models/review')
 const ExpressError = require("./utils/ExpressError")
 
 const isLoggedIn = (req, res, next)=>{
@@ -13,7 +14,7 @@ const isLoggedIn = (req, res, next)=>{
 }
 
 const isOwner = async (req, res, next)=>{
-    // campgroud owner == user who is requesting(for editing campgrnd)
+    // campgroud owner == user who is requesting (for editing campgrnd)
     const {id} = req.params
     // get campgrd
     const campground = await Campground.findById(id)
@@ -22,4 +23,16 @@ const isOwner = async (req, res, next)=>{
     }
     next()
 }
-module.exports = { isLoggedIn, isOwner }
+
+const isReviewAuthor = async(req, res, next)=>{
+    // review author == current user
+    const {reviewId} = req.params
+    // get review
+    const review = await Review.findById(reviewId)
+    if(!review.author.equals(req.user._id)){
+        next(new ExpressError(400, "You are not authorized to do that !"))
+    }
+    next()
+}
+
+module.exports = { isLoggedIn, isOwner, isReviewAuthor }

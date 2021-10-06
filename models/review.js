@@ -11,7 +11,8 @@ const reviewSchema = Schema({
         type: String,
         trim: true,
         required:[true, 'Review text must not be empty']
-    }
+    },
+    author:{type:Schema.Types.ObjectId, ref:'User'}
 })
 
 const Review = model('Review', reviewSchema)
