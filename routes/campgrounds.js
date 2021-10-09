@@ -8,6 +8,13 @@ const multer = require('multer')    // package for parsing form data with files
 const {storage, cloudinary} = require('../cloudinary/index')
 const upload = multer({ storage })
 
+// Import mapbox service u want
+const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding')
+const mbxToken = process.env.MAPBOX_TOKEN
+// create a client
+const geocoder = mbxGeocoding({accessToken:mbxToken})
+
+
 // view all camp grounds
 router.get('/', catchAsync(async (req, res)=>{
     const campgrounds = await Campground.find({}) 
@@ -41,10 +48,16 @@ router.get('/new', isLoggedIn, (req, res)=>{
     res.render('campgrounds/new.ejs')
 })
 router.get('/:id', catchAsync(async (req, res)=>{
-    const {id} = req.params
-    const campground = await Campground.findById(id).populate({path:'reviews', populate:'author'})
-    if(!campground) throw new ExpressError(400, 'Campground does not exist')
-    res.render('campgrounds/show.ejs', {campground})
+    const geoData = await geocoder.forwardGeocode({
+        query:'lonavala, Pune',
+        limit:1
+    }).send()
+    console.log(geoData.body.features[0].geometry.coordinates);
+    res.send('OK !!')
+    // const {id} = req.params
+    // const campground = await Campground.findById(id).populate({path:'reviews', populate:'author'})
+    // if(!campground) throw new ExpressError(400, 'Campground does not exist')
+    // res.render('campgrounds/show.ejs', {campground})
 }))
 router.get('/:id/edit', isLoggedIn, isOwner, catchAsync(async(req, res)=>{
     const {id} = req.params
