@@ -11,12 +11,16 @@
             <div class="col-md-6 col-lg-4 mb-3">
                 <a href="/campgrounds/<%= campground._id %>">
                     <div class="card">
-                        <img class="card-img-top" src=<%= campground.images[0].url %> alt="">
-                        <div class="card-body">
-                            <h4 class="card-title"><%= campground.name %> </h4>
+                            <% if(campground.images.length){ %>
+                            <img class="card-img-top" src=<%= campground.images[0].url %> alt="">
+                            <% } else { %>
+                            <img class="card-img-top" src="https://res.cloudinary.com/dkqoek2p3/image/upload/v1633806210/YelpCamp/photo-14_flcwgt.jpg" alt="">
+                            <% } %> 
+                            <div class="card-body">
+                                <h4 class="card-title"><%= campground.name %> </h4>
+                            </div>
                         </div>
-                    </div>
-                </a>
+                    </a>
             </div>
         <% }) %> 
     </div>

@@ -29,17 +29,31 @@ const campgroundSchema = new Schema({
     location:{
         country:{
             type: String,
+            trim:  true,
             default:'India',
             required: true,
         } ,
         state:{
             type: String,
+            trim:  true,
             default:'Maharashtra'
         } ,
         city:{
             type: String,
+            trim:  true,
             default:'Mumbai'
         } 
+    },
+    geometry:{      // geoJSON format to store geographic points
+        type: {
+            type: String, 
+            enum: ['Point'],
+            required: true
+          },
+          coordinates: {
+            type: [Number],
+            required: true
+          }
     },
     reviews:[
         {type:Schema.Types.ObjectId, ref:'Review'}
@@ -47,6 +61,7 @@ const campgroundSchema = new Schema({
 })
 
 campgroundSchema.post('findOneAndDelete', async function(doc){
+    // remove all reviews assosiated to it after deleting a campground
     await Review.deleteMany({
         _id:{
             $in: doc.reviews
@@ -54,6 +69,9 @@ campgroundSchema.post('findOneAndDelete', async function(doc){
     })
 })
 
+campgroundSchema.post('deleteMany', async function(doc){
+    await Review.deleteMany({})
+})
 // make a model out of schema
 const Campground = new model('Campground',campgroundSchema)
 

@@ -14,7 +14,14 @@ const mbxToken = process.env.MAPBOX_TOKEN
 // create a client
 const geocoder = mbxGeocoding({accessToken:mbxToken})
 
-
+const getGeoData = async(location)=>{
+    const {state, city} = location
+    const geoData = await geocoder.forwardGeocode({
+        query:`${city}, ${state}`,
+        limit:1
+    }).send()
+    return geoData
+}
 // view all camp grounds
 router.get('/', catchAsync(async (req, res)=>{
     const campgrounds = await Campground.find({}) 
@@ -24,8 +31,13 @@ router.get('/', catchAsync(async (req, res)=>{
 router.post('/', isLoggedIn, upload.array('image'), catchAsync(async (req, res)=>{
     if(!req.body.campground) throw new ExpressError(400, 'Invalid Campground data')
     if(!req.body.campground.description) delete req.body.campground.description
+    
     // make new campground obj
     const campground = new Campground(req.body.campground)
+    // get geo data of location using forward geocading
+    const geoData = await getGeoData(campground.location)
+    // set geolocation (coordinates)
+    campground.geometry = geoData.body.features[0].geometry
     // take images files
     campground.images = req.files.map(f => ({url:f.path, filename:f.filename}))
     // set the owner
@@ -48,16 +60,10 @@ router.get('/new', isLoggedIn, (req, res)=>{
     res.render('campgrounds/new.ejs')
 })
 router.get('/:id', catchAsync(async (req, res)=>{
-    const geoData = await geocoder.forwardGeocode({
-        query:'lonavala, Pune',
-        limit:1
-    }).send()
-    console.log(geoData.body.features[0].geometry.coordinates);
-    res.send('OK !!')
-    // const {id} = req.params
-    // const campground = await Campground.findById(id).populate({path:'reviews', populate:'author'})
-    // if(!campground) throw new ExpressError(400, 'Campground does not exist')
-    // res.render('campgrounds/show.ejs', {campground})
+    const {id} = req.params
+    const campground = await Campground.findById(id).populate({path:'reviews', populate:'author'})
+    if(!campground) throw new ExpressError(400, 'Campground does not exist')
+    res.render('campgrounds/show.ejs', {campground})
 }))
 router.get('/:id/edit', isLoggedIn, isOwner, catchAsync(async(req, res)=>{
     const {id} = req.params
@@ -68,6 +74,9 @@ router.get('/:id/edit', isLoggedIn, isOwner, catchAsync(async(req, res)=>{
 router.put('/:id', isLoggedIn, upload.array('image'), isOwner, catchAsync(async (req, res, next)=>{
         const {id} = req.params
         const campground = {...req.body.campground}
+        // update geo location data
+        const geoData = await getGeoData(campground.location)
+        campground.geometry = geoData.body.features[0].geometry
         const upd_campground = await Campground.findByIdAndUpdate(id, campground, {runValidators:true, new:true})
         const imgs = req.files.map(f => ({url:f.path, filename:f.filename}))    // add images
         upd_campground.images.push(...imgs)

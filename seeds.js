@@ -11,16 +11,35 @@ mongoose.connect("mongodb://localhost:27017/YelpcampApp", {useNewUrlParser: true
     console.log("ERROR !!", err);
   });
 
+require('dotenv').config()
+// Import mapbox service u want
+const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding')
+const mbxToken = process.env.MAPBOX_TOKEN
+console.log(mbxToken);
+// create a client
+const geocoder = mbxGeocoding({accessToken:mbxToken})
+
+const getGeoData = async(location)=>{
+    const {state, city} = location
+    const geoData = await geocoder.forwardGeocode({
+        query:`${city}, ${state}`,
+        limit:1
+    }).send()
+    return geoData
+}
+
 const seedCamps = [
     {
       name:'Salmon Lake',
-       location:{ city:'Pulnas'} ,
+      owner:"6154ca2c91320c1c86bbeeb2",
+       location:{ city:'Mulshi'} ,
        images:[{
          url:'https://res.cloudinary.com/dkqoek2p3/image/upload/v1632569397/YelpCamp/photo-1508873696983-2dfd5898f08b_nqvpey.jpg',
          filename:'YelpCamp/photo-1508873696983-2dfd5898f08b_nqvpey'
        }]},
     {
       name:'Granite Hill',
+      owner:"6154ca2c91320c1c86bbeeb2",
        location:{ city:'Lonavala'} ,
        images:[{
          url:'https://res.cloudinary.com/dkqoek2p3/image/upload/v1632568979/YelpCamp/Lonavalamh_kl6gyp.jpg',
@@ -37,6 +56,7 @@ const seedCamps = [
       },
     {
       name:'Night Egde',
+      owner:"6154ca2c91320c1c86bbeeb2",
        location:{ city:'Khopoli'} ,
        images:[{
          url:'https://res.cloudinary.com/dkqoek2p3/image/upload/v1632569255/YelpCamp/COVID_20CAMPING_20TN_lca6qh.jpg',
@@ -49,7 +69,8 @@ const seedCamps = [
     },
     {
       name:'Amazon Woods',
-       location:{ state:'Argentena', city:'upiha'} ,
+      owner:"6154ca2c91320c1c86bbeeb2",
+       location:{ state:'Argentena', city:'rosario'} ,
        images:[{
          url:'https://res.cloudinary.com/dkqoek2p3/image/upload/v1632569246/YelpCamp/solo-camping-tips_edib8a.jpg',
          filename:'YelpCamp/solo-camping-tips_edib8a'
@@ -65,6 +86,7 @@ const seedCamps = [
     },
     {
       name:'Cold Himalayas',
+      owner:"6154ca2c91320c1c86bbeeb2",
        location:{ state:'Uttarakhand', city:'Dehradun'} ,
        images:[{
          url:'https://res.cloudinary.com/dkqoek2p3/image/upload/v1632570350/YelpCamp/photo-1503265192943-9d7eea6fc77a_n2hsv5.jpg',
@@ -73,11 +95,18 @@ const seedCamps = [
     }
 ]
 
-// save the campgrounds in DB
-Campground.insertMany(seedCamps)
-    .then(res=>{
-        console.log(res);
-    })
-    .catch(e=>{
-        console.log(e);
-    })
+const seedDB = async(data)=>{
+  // delete all campgrounds in DB
+  await Campground.deleteMany({})
+  // save fake campground in DB
+  data.forEach(async(camp) =>{
+    const campground = new Campground(camp)
+    // get geodata
+    const geoData = await getGeoData(campground.location)
+    campground.geometry = geoData.body.features[0].geometry
+    // save to DB
+    await campground.save()
+  })  
+  mongoose.connection.close()
+}
+// seedDB(seedCamps)
