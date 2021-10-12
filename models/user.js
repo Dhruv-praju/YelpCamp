@@ -6,8 +6,9 @@ const passportLocalMongoose = require('passport-local-mongoose')
 const userSchema = new Schema({
     email:{
         type: String,
-        required: true,
-        unique: true
+        trim: true,
+        required: [true, 'Email Id cannot be blank'],
+        unique: [true, 'Please enter a different Email Id']
     }
 })
 

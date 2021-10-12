@@ -14,7 +14,8 @@ router.post('/register',catchAsync( async (req, res)=>{
         username = username.trim()
         // make a new user instance
         const new_usr = new User({email, username})
-        const registered_usr = await User.register(new_usr, password)   // this will make salt and passwd for new user
+        const registered_usr = await User.register(new_usr, password)   // this will make salt and passwd for new user and save in DB
+        // after REGISTERING automatically login that user
         req.login(registered_usr, err =>{
             if(err) return next(err)
             console.log(registered_usr);

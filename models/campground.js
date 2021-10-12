@@ -7,8 +7,8 @@ const campgroundSchema = new Schema({
     name:{
         type: String,
         trim:  true,
-        required: [true, 'campground title must not be blank'],
-        unique:true
+        required: [true, 'Campground title must not be blank'],
+        unique:[true, 'Campground title is already taken, enter different title']
     },
     images:[
         {
@@ -20,7 +20,7 @@ const campgroundSchema = new Schema({
     price:{
         type: Number,
         default:0,
-        min:[0, 'campground price must be positive']
+        min:[0, 'Campground price must be positive']
     },
     description:{
         type: String,
