@@ -1,9 +1,13 @@
-/** Intialize Database with some fake data */
+/** Delete all Existing Data and Intialize Database with some fake data */
+require('dotenv').config()
 const mongoose = require('mongoose')
-
 const Campground = require('./models/campground')
+const User = require('./models/user')
 
-mongoose.connect("mongodb://localhost:27017/YelpcampApp", {useNewUrlParser: true, useUnifiedTopology: true})
+const cloudDbUrl = process.env.CLOUD_DB_URL
+const localDbUrl = "mongodb://localhost:27017/YelpcampApp"
+
+mongoose.connect(cloudDbUrl, {useNewUrlParser: true, useUnifiedTopology: true})
   .then(() => {
     console.log("CONNECTION OPEN  !");
   })
@@ -11,11 +15,9 @@ mongoose.connect("mongodb://localhost:27017/YelpcampApp", {useNewUrlParser: true
     console.log("ERROR !!", err);
   });
 
-require('dotenv').config()
 // Import mapbox service u want
 const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding')
 const mbxToken = process.env.MAPBOX_TOKEN
-console.log(mbxToken);
 // create a client
 const geocoder = mbxGeocoding({accessToken:mbxToken})
 
@@ -31,7 +33,6 @@ const getGeoData = async(location)=>{
 const seedCamps = [
     {
       name:'Salmon Lake',
-      owner:"6154ca2c91320c1c86bbeeb2",
        location:{ city:'Mulshi'} ,
        images:[{
          url:'https://res.cloudinary.com/dkqoek2p3/image/upload/v1632569397/YelpCamp/photo-1508873696983-2dfd5898f08b_nqvpey.jpg',
@@ -39,10 +40,9 @@ const seedCamps = [
        }]},
     {
       name:'Granite Hill',
-      owner:"6154ca2c91320c1c86bbeeb2",
        location:{ city:'Lonavala'} ,
        images:[{
-         url:'https://res.cloudinary.com/dkqoek2p3/image/upload/v1632568979/YelpCamp/Lonavalamh_kl6gyp.jpg',
+         url:'https://res.cloudinary.com/dkqoek2p3/image/upload/v1634144449/YelpCamp/Lonavalamh_nteiks.jpg',
          filename:'YelpCamp/Lonavalamh_kl6gyp'
         },
         {
@@ -56,7 +56,6 @@ const seedCamps = [
       },
     {
       name:'Night Egde',
-      owner:"6154ca2c91320c1c86bbeeb2",
        location:{ city:'Khopoli'} ,
        images:[{
          url:'https://res.cloudinary.com/dkqoek2p3/image/upload/v1632569255/YelpCamp/COVID_20CAMPING_20TN_lca6qh.jpg',
@@ -69,7 +68,6 @@ const seedCamps = [
     },
     {
       name:'Amazon Woods',
-      owner:"6154ca2c91320c1c86bbeeb2",
        location:{ state:'Argentena', city:'rosario'} ,
        images:[{
          url:'https://res.cloudinary.com/dkqoek2p3/image/upload/v1632569246/YelpCamp/solo-camping-tips_edib8a.jpg',
@@ -86,7 +84,6 @@ const seedCamps = [
     },
     {
       name:'Cold Himalayas',
-      owner:"6154ca2c91320c1c86bbeeb2",
        location:{ state:'Uttarakhand', city:'Dehradun'} ,
        images:[{
          url:'https://res.cloudinary.com/dkqoek2p3/image/upload/v1632570350/YelpCamp/photo-1503265192943-9d7eea6fc77a_n2hsv5.jpg',
@@ -96,17 +93,31 @@ const seedCamps = [
 ]
 
 const seedDB = async(data)=>{
+  // delete all existing users
+  await User.deleteMany({})
+  // make a new user and register it
+  const username='spencer'
+  const email='spencer@gmail.com'
+  const password='spencer'
+
+  const usr = new User({email, username})
+  const registered_usr = await User.register(usr, password)
   // delete all campgrounds in DB
   await Campground.deleteMany({})
-  // save fake campground in DB
-  data.forEach(async(camp) =>{
+  // save fake campgrounds in DB
+  for(camp of data){
     const campground = new Campground(camp)
+    // make above registed user as owner
+    campground.owner = registered_usr
     // get geodata
     const geoData = await getGeoData(campground.location)
     campground.geometry = geoData.body.features[0].geometry
     // save to DB
     await campground.save()
-  })  
-  mongoose.connection.close()
+  } 
+
+  console.log('DONE');
 }
-// seedDB(seedCamps)
+seedDB(seedCamps)
+  .then(()=>{mongoose.connection.close()
+  })

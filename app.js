@@ -21,6 +21,8 @@ const userRoutes = require('./routes/user')
 const reviewRoutes = require('./routes/review')
 const ExpressError = require('./utils/ExpressError')
 const morgan = require('morgan')
+const cloudDbUrl = process.env.CLOUD_DB_URL   // connects to MongoDB ATLAS
+const localDbUrl = "mongodb://localhost:27017/YelpcampApp"
 
 app.engine('ejs', ejsMate)
 
@@ -34,7 +36,7 @@ const mongoose = require('mongoose')
 // import Model(with which we can interact with DB)
 const Campground = require('./models/campground')
 
-mongoose.connect("mongodb://localhost:27017/YelpcampApp", {useNewUrlParser: true, useUnifiedTopology: true})
+mongoose.connect(localDbUrl, {useNewUrlParser: true, useUnifiedTopology: true})
   .then(() => {
     console.log("CONNECTION OPEN  !");
   })
