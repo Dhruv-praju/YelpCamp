@@ -3,7 +3,7 @@ const router = express.Router()
 const Campground = require('../models/campground')
 const catchAsync = require('../utils/catchAsync')
 const ExpressError = require('../utils/ExpressError')
-const {isLoggedIn, isOwner} = require('../middleware')
+const {isLoggedIn, isOwner, validateCampground} = require('../middleware')
 const multer = require('multer')    // package for parsing form data with files
 const {storage, cloudinary} = require('../cloudinary/index')
 const upload = multer({ storage })
@@ -28,7 +28,7 @@ router.get('/', catchAsync(async (req, res)=>{
     res.render('campgrounds/index.ejs', { campgrounds })
 }))
 // post route to submit campground comming from form
-router.post('/', isLoggedIn, upload.array('image'), catchAsync(async (req, res)=>{
+router.post('/', isLoggedIn, upload.array('image'), validateCampground, catchAsync(async (req, res)=>{
     if(!req.body.campground) throw new ExpressError(400, 'Invalid Campground data')
     if(!req.body.campground.description) delete req.body.campground.description
     
@@ -71,7 +71,7 @@ router.get('/:id/edit', isLoggedIn, isOwner, catchAsync(async(req, res)=>{
     if(!campground) throw new ExpressError(400, 'Campground does not exist')
     res.render('campgrounds/edit.ejs', {campground})
 }))
-router.put('/:id', isLoggedIn, upload.array('image'), isOwner, catchAsync(async (req, res, next)=>{
+router.put('/:id', isLoggedIn, upload.array('image'), isOwner, validateCampground, catchAsync(async (req, res, next)=>{
         const {id} = req.params
         const campground = {...req.body.campground}
         // update geo location data
