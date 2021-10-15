@@ -2,7 +2,6 @@ const Campground = require("./models/campground")
 const Review = require('./models/review')
 const ExpressError = require("./utils/ExpressError")
 const {campgroundSchema, reviewSchema} = require('./schemas')
-const sanitizeHtml = require('sanitize-html')
 
 const isLoggedIn = (req, res, next)=>{
     if(!req.isAuthenticated()){
@@ -37,7 +36,7 @@ const isReviewAuthor = async(req, res, next)=>{
     next()
 }
 
-const validateCampground = (req, res, next)=>{
+const validateSanitizeCampground = (req, res, next)=>{
     const {error, result} = campgroundSchema.validate(req.body)
     if(error){
         const msg = error.details.map(el=>el.message).join(',')
@@ -46,7 +45,7 @@ const validateCampground = (req, res, next)=>{
     next()
 }
 
-const validateReview = (req, res, next)=>{
+const validateSanitizeReview = (req, res, next)=>{
     const {error, result} = reviewSchema.validate(req.body)
     if(error){
         const msg = error.details.map(el=>el.message).join(',')
@@ -54,4 +53,4 @@ const validateReview = (req, res, next)=>{
     } 
     next()
 }
-module.exports = { isLoggedIn, isOwner, isReviewAuthor, validateCampground, validateReview }
+module.exports = { isLoggedIn, isOwner, isReviewAuthor, validateSanitizeCampground, validateSanitizeReview }
