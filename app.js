@@ -12,6 +12,7 @@ const {render} = require('ejs')
 const ejsMate = require('ejs-mate')
 const methodOverride = require('method-override')
 const session = require('express-session')
+const MongoStore = require('connect-mongo')   // to store session data
 const flash = require('connect-flash')
 const passport = require('passport')
 const LocalStrategy = require('passport-local')
@@ -22,7 +23,7 @@ const reviewRoutes = require('./routes/review')
 const ExpressError = require('./utils/ExpressError')
 const mongoSanitize = require('express-mongo-sanitize')   // sanitize query 
 const morgan = require('morgan')              // server logs
-const helmet = require("helmet")
+const helmet = require("helmet")      // for protection against attacks
 const cloudDbUrl = process.env.CLOUD_DB_URL   // connects to MongoDB ATLAS
 const localDbUrl = "mongodb://localhost:27017/YelpcampApp"
 app.engine('ejs', ejsMate)
@@ -44,8 +45,22 @@ mongoose.connect(localDbUrl, {useNewUrlParser: true, useUnifiedTopology: true})
   .catch((err) => {
     console.log("ERROR !!", err);
   });
-  
+
+/** Session Configuration */
+const store = MongoStore.create({
+  mongoUrl: localDbUrl,
+  crypto:{
+    secret:'mylittlesecret'
+  },
+  touchAfter: 60 * 60 * 24    // this will not update session every time user refreshes web site if the data is not changed. if it is exactly same as before it will not update continously, it will update every 24 hrs
+})
+
+store.on("error", function(e){
+  console.log("SESSION STORE ERROR", e);
+})
+
 const sessionOptions = {
+  store,
   name:'session',
   secret:'mylittlesecret',
   resave:false,
@@ -60,6 +75,7 @@ const sessionOptions = {
 app.use(session(sessionOptions))
 app.use(flash())
 app.use(mongoSanitize())
+
 /** Authentication configuraton */
 app.use(passport.initialize())
 app.use(passport.session())
