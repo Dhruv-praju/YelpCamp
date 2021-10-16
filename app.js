@@ -20,10 +20,11 @@ const campgroundRoutes = require('./routes/campgrounds')
 const userRoutes = require('./routes/user')
 const reviewRoutes = require('./routes/review')
 const ExpressError = require('./utils/ExpressError')
-const morgan = require('morgan')
+const mongoSanitize = require('express-mongo-sanitize')   // sanitize query 
+const morgan = require('morgan')              // server logs
+const helmet = require("helmet")
 const cloudDbUrl = process.env.CLOUD_DB_URL   // connects to MongoDB ATLAS
 const localDbUrl = "mongodb://localhost:27017/YelpcampApp"
-
 app.engine('ejs', ejsMate)
 
 app.use(express.urlencoded({extended: true}))
@@ -44,10 +45,21 @@ mongoose.connect(localDbUrl, {useNewUrlParser: true, useUnifiedTopology: true})
     console.log("ERROR !!", err);
   });
   
-const sessionOptions = {secret:'mylittlesecret', resave:false, saveUninitialized:false}
+const sessionOptions = {
+  name:'session',
+  secret:'mylittlesecret',
+  resave:false,
+  saveUninitialized:false,
+  cookie:{
+    httpOnly:true,
+    // secure:true,
+    expires:Date.now()+1000*60*60*24*7,
+    maxAge:1000*60*60*24*7
+  }
+}
 app.use(session(sessionOptions))
 app.use(flash())
-
+app.use(mongoSanitize())
 /** Authentication configuraton */
 app.use(passport.initialize())
 app.use(passport.session())
@@ -59,14 +71,14 @@ passport.deserializeUser(User.deserializeUser())    // this is for deserializing
 //  deserialize means to remove user data of the session
 
 /** Middlewares */
-
+app.use(helmet({contentSecurityPolicy:false}))
 app.use(morgan('dev'))
 // app.use((req, res, next)=>{
 //   // console.log(req.user);
 //   next()
 // })
 app.use((req, res, next)=>{
-    // console.log(req.session);
+    // console.log(req.query);
     // make success key variable to access message to all templates
     res.locals.success = req.flash('success')
     res.locals.error = req.flash('error')
