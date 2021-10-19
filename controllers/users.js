@@ -1,13 +1,9 @@
-const express = require('express')
-const passport = require('passport')
-const router = express.Router()
 const User = require('../models/user')
-const catchAsync = require('../utils/catchAsync')
 
-router.get('/register',(req, res)=>{
+module.exports.renderRegisterForm = (req, res)=>{
     res.render('users/register.ejs')
-})
-router.post('/register',catchAsync( async (req, res)=>{
+}
+module.exports.registerUser = async (req, res)=>{
     try {
         let {email, username, password} = req.body
         email = email.trim()
@@ -27,25 +23,19 @@ router.post('/register',catchAsync( async (req, res)=>{
         req.flash('error', e.message)
         res.redirect('/register')
     }
-}))
-
-router.get('/login', (req, res)=>{
+}
+module.exports.renderLoginForm = (req, res)=>{
     res.render('users/login.ejs')
-})
-router.post('/login',
- passport.authenticate('local', {failureFlash: true, failureRedirect:'/login'}),
- (req, res)=>{
+}
+module.exports.loginUser = (req, res)=>{
     req.flash('success', 'Successfully logged In ')
     // before redirecting return to page user was previously requesting for before getting logged in
     const redirectUrl = req.session.returnTo || '/'
     delete req.session.returnTo     // remove session data
     res.redirect(redirectUrl)
-})
-// ref :http://www.passportjs.org/docs/downloads/html/
-
-router.get('/logout', (req, res)=>{
+}
+module.exports.logoutUser = (req, res)=>{
     req.logout()
     req.flash('success', 'Goodbye ')
     res.redirect('/')
-})
-module.exports = router
+}

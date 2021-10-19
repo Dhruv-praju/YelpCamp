@@ -33,9 +33,9 @@ const campgroundSchema = Joi.object({
             country: Joi.string().trim().required().escapeHTML(),
             state: Joi.string().trim().required().escapeHTML(),
             city: Joi.string().trim().required().escapeHTML()
-        }).required()
-
-    }).required()
+        }).required(),
+    }).required(),
+    deleteImages: Joi.array()
 })
 
 const reviewSchema = Joi.object({

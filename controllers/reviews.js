@@ -1,11 +1,7 @@
-const express = require('express')
-const router = express.Router({mergeParams:true})
-const catchAsync = require('../utils/catchAsync')
-const {isLoggedIn, isReviewAuthor, validateSanitizeReview} = require('../middleware')
 const Campground = require('../models/campground')
 const Review = require('../models/review')
 
-router.post('/', isLoggedIn, validateSanitizeReview, catchAsync(async(req, res)=>{
+module.exports.createReview = async(req, res)=>{
     const {id} = req.params
     // find the campground
     const campground = await Campground.findById(id)
@@ -20,14 +16,12 @@ router.post('/', isLoggedIn, validateSanitizeReview, catchAsync(async(req, res)=
     await campground.save()
 
     res.redirect(`/campgrounds/${campground._id}`)
-}))
-router.delete('/:reviewId', isLoggedIn, isReviewAuthor, catchAsync(async(req, res)=>{
+}
+module.exports.deleteReview = async(req, res)=>{
     // find and delete review obj
     const {reviewId, id} = req.params
     const review = await Review.findByIdAndDelete(reviewId)
     // delete this review reference out of array in campgrd object
     await Campground.findByIdAndUpdate(id, {$pull: {reviews: reviewId}})
     res.redirect(`/campgrounds/${id}`)
-}))
-
-module.exports = router
+}
