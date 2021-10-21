@@ -38,7 +38,7 @@ const mongoose = require('mongoose')
 // import Model(with which we can interact with DB)
 const Campground = require('./models/campground')
 
-mongoose.connect(localDbUrl, {useNewUrlParser: true, useUnifiedTopology: true})
+mongoose.connect(cloudDbUrl, {useNewUrlParser: true, useUnifiedTopology: true})
   .then(() => {
     console.log("CONNECTION OPEN  !");
   })
@@ -48,7 +48,7 @@ mongoose.connect(localDbUrl, {useNewUrlParser: true, useUnifiedTopology: true})
 
 /** Session Configuration */
 const store = MongoStore.create({
-  mongoUrl: localDbUrl,
+  mongoUrl: cloudDbUrl,
   crypto:{
     secret:'mylittlesecret'
   },
