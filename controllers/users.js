@@ -14,7 +14,7 @@ module.exports.registerUser = async (req, res)=>{
         // after REGISTERING automatically login that user
         req.login(registered_usr, err =>{
             if(err) return next(err)
-            console.log(registered_usr);
+            // console.log(registered_usr);
             req.flash('success', 'Welcome to Yelp Camp!')
             res.redirect('/campgrounds')
         })

@@ -1,5 +1,5 @@
 mapboxgl.accessToken = mapToken;
-console.log(campground.geometry);
+// console.log(campground.geometry);
 // MAP OBJECT
 const map = new mapboxgl.Map({
   container: "map", // container ID
