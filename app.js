@@ -39,12 +39,12 @@ const mongoose = require('mongoose')
 const Campground = require('./models/campground')
 
 mongoose.connect(cloudDbUrl, {useNewUrlParser: true, useUnifiedTopology: true})
-  .then(() => {
-    console.log("CONNECTION OPEN  !");
-  })
-  .catch((err) => {
-    console.log("ERROR !!", err);
-  });
+
+const db = mongoose.connection;
+db.on("error", console.error.bind(console, "connection error:"));
+db.once("open", () => {
+    console.log("Database connected");
+});
 
 /** Session Configuration */
 const store = MongoStore.create({
