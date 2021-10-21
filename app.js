@@ -135,7 +135,8 @@ function handleCastError(error){
   error.status = 404
   return error
 }
-app.listen(5000, (req,res)=> {
+const port = process.env.PORT || 5000
+app.listen(port, (req,res)=> {
     console.log('Server started !')
-    console.log('Listeninig at port 5000 ...');
+    console.log(`Listeninig at port ${port}...`);
 })
