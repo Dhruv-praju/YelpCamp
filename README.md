@@ -12,7 +12,24 @@
 \
 \
 YelpCamp is a platform where people can explore different **Camping**, **Trekking** and **Hiking** places also known as **Campgrounds**. People can see the location of a Campground the **map** and can navigate. In order to **review and rate** a campground they must have an account. Registered users can also **create** their own campground.
- 
-## Features
-- Users can create, view, edit and remove campgrounds.
-- Users can review and rate campground , and remove their review.
+
+Yelpcamp allows users to:
+- Create, view, edit and remove Campgrounds
+- Rate Campgrounds
+- Comment on Campgrounds
+- Delete Comment on Campground
+
+App link: https://serene-hamlet-21175.herokuapp.com/
+
+## Stack & Features
+ It is built using NodeJS, Express, MongoDB with RESFUL routing.
+
+Following features are implemented in Yelpcamp applicaton:
+- **Authentication**
+- **Authorization**
+- **API**
+- **CRUD** operations
+- **Error handling**
+- **Security**
+- **RESTFUL** Routing
+- **Responsive Design**
