@@ -1,11 +1,54 @@
 <%- layout('layouts/boilerplate') %> 
 
-    <header class="jumbotron">
-        <h1 class="display-4 font-weight-normal">Welcome to Campground !!</h1>
+    <header class="jumbotron mb-0 text-center">
+        <h1 class="display-4 font-weight-normal">Welcome to Campground </h1>
         <p class="lead">View our hand-picked campgrounds from all over the world</p>
         <a class="btn btn-primary btn-lg" href="/campgrounds/new">Add a new Campground</a>
     </header>
     
+    <nav id="searchNav" class="navbar navbar-expand navbar-light sticky-top bg-light shadow-sm mb-4">
+        <div class="container">
+          <div class="collapse navbar-collapse">
+            <ul class="navbar-nav mr-auto">
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Sort By
+                  </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <form class="sortForm" action="/campgrounds" method="GET">
+                    <input type="text" name="sortby" value="rateAvg" class="d-none">
+                    <button type="submit" class="dropdown-item">Highest Rated</button>
+                  </form>
+                  <form class="sortForm" action="/campgrounds" method="GET">
+                    <input type="text" name="sortby" value="rateCount" class="d-none">
+                    <button type="submit" class="dropdown-item">Most Reviewed</button>
+                  </form>
+                  <form class="sortForm" action="/campgrounds" method="GET">
+                    <input type="text" name="sortby" value="priceLow" class="d-none">
+                    <button type="submit" class="dropdown-item">Lowest Price</button>
+                  </form>
+                  <form class="sortForm" action="/campgrounds" method="GET">
+                    <input type="text" name="sortby" value="priceHigh" class="d-none">
+                    <button type="submit" class="dropdown-item">Highest Price</button>
+                  </form>
+                  <a href="/campgrounds" href class="dropdown-item">Reset</a>
+                </div>
+              </li>
+            </ul>
+            <div class="d-none d-md-block">
+              <form action="/campgrounds" method="GET" class="input-group">
+                <input type="text" class="form-control" type="text" name="search" placeholder="Search Campgrounds..." aria-label="Search">
+                <div class="input-group-append">
+                  <button class="btn btn-dark border-0" type="submit">
+                      <i class="fas fa-search"></i>
+                      </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+
     <div class="row text-center">
         <% campgrounds.forEach((campground)=>{ %>
             <div class="col-md-6 col-lg-4 mb-3">
