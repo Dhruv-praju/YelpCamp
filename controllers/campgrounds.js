@@ -4,7 +4,20 @@ const {cloudinary} = require('../cloudinary/index')
 const getGeoData = require('../mapbox/helper')
 
 module.exports.index = async (req, res)=>{
-    const campgrounds = await Campground.find({}) 
+    let campgrounds = await Campground.find({}) 
+    console.log(req.query);
+    const {search, sortby} = req.query
+    if(search){     // search query
+        console.log('SEARCHING');
+        // get campgrounds of matching name or location
+        campgrounds = await Campground.find({ $or: [{name: {$regex: `${search.trim()}`, $options:'i'}}, 
+                                                    {'location.country': {$regex: `${search.trim()}`, $options:'i'}},
+                                                    {'location.state': {$regex: `${search.trim()}`, $options:'i'}},
+                                                    {'location.city': {$regex: `${search.trim()}`, $options:'i'}}  ] })
+    }
+    else if(sortby){    // sort query
+        console.log('SORTING');
+    }
     res.render('campgrounds/index.ejs', { campgrounds })
 }
 module.exports.newForm = (req, res)=>{

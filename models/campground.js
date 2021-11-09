@@ -59,6 +59,9 @@ const campgroundSchema = new Schema({
         {type:Schema.Types.ObjectId, ref:'Review'}
     ]
 })
+campgroundSchema.methods.getAvgRating = function(){
+    console.log(this);
+}
 
 campgroundSchema.post('findOneAndDelete', async function(doc){
     // remove all reviews assosiated to it after deleting a campground
