@@ -59,8 +59,22 @@ const campgroundSchema = new Schema({
         {type:Schema.Types.ObjectId, ref:'Review'}
     ]
 })
-campgroundSchema.methods.getAvgRating = function(){
-    console.log(this);
+campgroundSchema.methods.getAvgRating = async function(){
+    /** Returns the average rating of the campground */
+    await this.populate('reviews')
+    // console.log(this);
+    let avgRating = 0 
+    if(this.reviews.length){
+        let ratings = this.reviews.map( ({rating})=> rating )
+        // find average
+        let sum=0
+        for(rate of ratings){
+            sum += rate
+        }
+        avgRating = sum/ratings.length
+    }
+    // console.log(avgRating);
+    return avgRating
 }
 
 campgroundSchema.post('findOneAndDelete', async function(doc){
