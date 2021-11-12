@@ -4,7 +4,33 @@ const {cloudinary} = require('../cloudinary/index')
 const getGeoData = require('../mapbox/helper')
 
 module.exports.index = async (req, res)=>{
-    const campgrounds = await Campground.find({}) 
+    let campgrounds = await Campground.find({}) 
+    // console.log(req.query);
+    const {search, sortby} = req.query
+    if(search){     // search query
+        // get campgrounds of matching name or location
+        campgrounds = await Campground.find({ $or: [{name: {$regex: `${search.trim()}`, $options:'i'}}, 
+                                                    {'location.country': {$regex: `${search.trim()}`, $options:'i'}},
+                                                    {'location.state': {$regex: `${search.trim()}`, $options:'i'}},
+                                                    {'location.city': {$regex: `${search.trim()}`, $options:'i'}}  ] })
+    }
+    else if(sortby){    // sort query
+        if(sortby==='rateAvg'){     // sort by rating
+            for(camp of campgrounds){
+                camp.avgRating = await camp.getAvgRating()
+            }
+            campgrounds.sort((a,b)=> b.avgRating - a.avgRating )
+        }
+        else if(sortby==='priceLow'){       // sort by Low prices
+            campgrounds.sort((a,b)=> a.price - b.price)
+        }
+        else if(sortby==='priceHigh'){      // sort by High prices
+            campgrounds.sort((a,b)=> b.price - a.price)
+        }
+        else if(sortby==='rateCount'){      // sort by review Count
+            campgrounds.sort((a,b)=> b.reviews.length - a.reviews.length)
+        }
+    }
     res.render('campgrounds/index.ejs', { campgrounds })
 }
 module.exports.newForm = (req, res)=>{
