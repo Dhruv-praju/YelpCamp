@@ -26,7 +26,7 @@ App link: https://webapp-yelpcamp.herokuapp.com/
 ## Stack & Features
  It is built using NodeJS, Express and MongoDB with RESFUL routing.
 
-Following features are implemented in Yelpcamp applicaton:
+Following features are implemented in the applicaton:
 - **Authentication**
 - **Authorization**
 - **API**
