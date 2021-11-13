@@ -81,7 +81,7 @@
                                             <% if(currentUser && review.author.equals(currentUser._id)){ %>
                                             
                                             <form action="/campgrounds/<%= campground._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST">
-                                                <button class="btn btn-danger btn-sm" type="submit">delete</button>
+                                                <button class="btn" type="submit"><i class="far fa-trash-alt" style="color: red;"></i></button>
                                             </form>
         
                                             <% } %> 
