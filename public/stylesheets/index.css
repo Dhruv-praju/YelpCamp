@@ -6,3 +6,6 @@
     transform: scale(1.05);
 
 }
+.cardDiv a{
+    text-decoration: none;
+}
